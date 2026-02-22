@@ -1,0 +1,35 @@
+@startuml
+title Интернет банк Container diagram
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(Client, "Клиент банка" )
+
+System_Ext(CallCentreOut, "Партнерский колл-центр")
+System_Ext(SmsGateway, "СМС шлюз телеком оператора")
+
+Container_Boundary(BankStandard, "Банк Стандарт"){
+    Container(CallCentre, "Внутренний колл-центр", "React, Java, Postgres")
+    Container(CallCentreService, "Сервис для колл-центров", "Nodejs", "Данные по продуктам")
+
+    Container(ManagementService, "Управление АБС", "Java", "Временно, вместо шины данных")
+    Container(DepositService, "Сервис депозитов", "Java", "Операции по депозитам")
+
+    Container(ABS, "Автоматизированная банковская система", "Oracle", "Операционные процессы")
+    Container(SendingService, "Сервис рассылок", "Java", "Рассылка уведомлений и др. по СМС, email и др.")
+}
+
+Rel(Client, CallCentre, "Консультация")
+Rel(Client, CallCentreOut, "Консультация")
+
+Rel(CallCentre, CallCentreService, "API REST/Async")
+Rel_Neighbor(CallCentreService, CallCentreOut, "Отправка данных")
+Rel(CallCentreService, ManagementService, "API REST/Async")
+
+Rel(ManagementService, SendingService, "Рассылка уведомлений")
+Rel(ManagementService, ABS, "Управление АБС")
+Rel(ManagementService, DepositService, "Операции по депозитам")
+
+Rel(SendingService, SmsGateway, "Рассылка по СМС")
+
+@enduml
