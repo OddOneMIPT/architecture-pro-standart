@@ -1,0 +1,22 @@
+@startuml
+title Банк Стандарт Context diagram
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(Client, "Клиент" )
+
+System_Ext(SmsGateway, "СМС шлюз телеком оператора")
+System_Ext(CallCentreOut, "Партнерский колл-центр")
+
+System_Boundary(BankStandard, "Банк Стандарт") {
+    System(ABS, "Автоматизированная банковская система", "Операционные процессы")
+    System(CallCentre, "Внутренний колл-центр")
+}
+
+Rel(Client, CallCentre, "Консультация")
+Rel(Client, CallCentreOut, "Консультация")
+Rel(CallCentre, ABS, "Обработка заявок")
+Rel(CallCentreOut, ABS, "Обработка заявок, получение данных по продуктам")
+Rel_Neighbor(ABS, SmsGateway, "Отправка уведомлений")
+@enduml
+
